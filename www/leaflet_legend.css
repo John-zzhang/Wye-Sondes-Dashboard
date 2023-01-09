@@ -1,0 +1,29 @@
+/*
+body {
+background-color:#63ECE9;
+}
+*/
+
+.leaflet .legend {
+                 font-size: 12px;
+                 }
+
+/*
+library(htmltools)
+browsable(
+  tagList(list(
+    tags$head(
+      tags$style(
+        ".leaflet .legend i{
+            border-radius: 50%;
+            width:50px;
+            height: 10px;
+            margin-top: 4px;
+         }
+        "
+      )
+    ),
+    leaf
+  ))
+)
+*/
