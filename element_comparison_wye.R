@@ -4,9 +4,9 @@ library(htmltools)
 library(shinydashboard)
 
 
-# set default sample site (Id=85006) and calcualte the min and max year
-yearStart <- join_redbrook_glasbury %>% dplyr::filter(ID==55023) %$% min(lubridate::year(Date))
-yearEnd <- join_redbrook_glasbury %>% dplyr::filter(ID==55023) %$% max(lubridate::year(Date))
+# set default sample site (Id=85006) and calcualte the min and max date
+dateStart <- join_redbrook_glasbury %>% dplyr::filter(ID==55023) %$% min(Date)
+dateEnd <- join_redbrook_glasbury %>% dplyr::filter(ID==55023) %$% max(Date)
 
 # UI component
 elementComparisonUI <- function(id){
@@ -41,19 +41,17 @@ elementComparisonUI <- function(id){
            
            column(width = 6,
                   
-                  p(tags$b("3. Choose a start and an end year"), style = "font-size:14px;color:#4997d0",width = "100%"),
-                  
+                  p(tags$b("3. Choose a start and an end date"), style = "font-size:14px;color:#4997d0",width = "100%"),
                   div(style = "margin-top: -10px"),
-                  
-                  sliderInput(ns("yearRange"),
+                  sliderInput(ns("dateRange"),
                               # label="3. Choose a start and end year:",
                               label = NULL,
-                              min = yearStart,
-                              max = yearEnd,
-                              value=c(yearStart,yearEnd),
+                              min = dateStart,
+                              max = dateEnd,
+                              value=c(dateStart,dateEnd),
                               width = '600px',
                               animate = TRUE,
-                              sep = "" )
+                              step = 1)
                   )
            
            ),
@@ -130,18 +128,18 @@ elementComparisonServer <- function (input,output,session){
        
         # update the SelectizeInput
           
-          updateSelectizeInput(session, inputId = "sampleSelection", choices = metadata_Sonde_Wye$Name, server = FALSE)
-   
+          # updateSelectizeInput(session, inputId = "sampleSelection", choices = metadata_Sonde_Wye$Name, server = FALSE)
+          # 
          output$plot2 <- renderPlotly({
           
-          req(input$sampleSelection2)
+          req(input$sampleSelection2,input$variable2)
           
           n <- length(input$variable2)
          
           plot_list = vector("list", n)
          
           sampleData2 <- filteredDataDropBox2() %>%
-                       dplyr::filter(lubridate::year(Date)>=input$yearRange[1] & lubridate::year(Date)<=input$yearRange[2])
+                       dplyr::filter(Date>=input$dateRange[1] & Date<=input$dateRange[2])
 
           for (i in 1:n)
           {

@@ -16,31 +16,36 @@ dataDownloadUI <- function(id){
      fluidPage(
          shinyWidgets::useShinydashboard(),
          
-         tags$head(
-           tags$style(HTML("
-           body {  background-color: white;}
-           .item {
-       background: #2196f3;
-       color: red;
-     }
-     .selectize-dropdown-content .active {
-       background: #2196f3 !important;
-       color: white !important;
-  
-           #sampleSelection+ div>.selectize-input {
-                            margin-top: -15px;
-                            border: 1px solid;
-                            height: 55px;
-                          }
-           #sampleSelection+ div>.selectize-dropdown {
-                            width: auto !important;
-                            color: blue;
-                            background-color: coral;
-                          } "
-                        )
-                      )
-                   ),
-         
+         tags$div(
+           "The Wye Sondes data can be downloaded in 3 ways: 1) download all the data. 2) download 
+            selected sites for all the parameters or 3) download selected site(s) and parameter(s)"
+                 ),
+         tags$br(),
+     #     tags$head(
+     #       tags$style(HTML("
+     #       body {  background-color: white;}
+     #       .item {
+     #   background: #2196f3;
+     #   color: red;
+     # }
+     # .selectize-dropdown-content .active {
+     #   background: #2196f3 !important;
+     #   color: white !important;
+     # 
+     #       #sampleSelection+ div>.selectize-input {
+     #                        margin-top: -15px;
+     #                        border: 1px solid;
+     #                        height: 55px;
+     #                      }
+     #       #sampleSelection+ div>.selectize-dropdown {
+     #                        width: auto !important;
+     #                        color: blue;
+     #                        background-color: coral;
+     #                      } "
+     #                    )
+     #                  )
+     #               ),
+     #     
          fluidRow(
            
            column(width = 5,
@@ -50,14 +55,17 @@ dataDownloadUI <- function(id){
                             p(tags$b("Download all the Sondes data "),
                                  style = "font-size:15px; color:#4997d0;"
                                ),
+                        
                             downloadButton(ns("downloadAllData"),
-                                            "Click this box and wait for the downloading to complete",
-                                             style= "color: #3498DB ; 
+                                            "Click this box and wait for the downloading to complete"
+                                           ,
+                                             style= "color: #3498DB ;
                                                      background-color: #CCCCFF;
                                                      border: 1px solid;
                                                     "
                                            )
-                            )
+                              ),
+                      tags$br(),
                         )
                   ),
            column(width = 7,
@@ -123,18 +131,20 @@ dataDownloadUI <- function(id){
                 ),
 
            column(width = 3,
-                 p(tags$b("2. Choose an element from the list"), style = "font-size:14px;color:#4997d0",width = "100%"),
+                 p(tags$b("2. Choose element(s) from the list"), style = "font-size:14px;color:#4997d0",width = "100%"),
                  div(style = "margin-top: -20px"),
                  uiOutput(ns("paraSelection"))
                 ),
 
            column(width = 6,
                  p(tags$b("3. Download data"), style = "font-size:14px;color:#4997d0",width = "100%"),
-                 div(style = "margin-top: -10px"),
+                 # div(style = "margin-top: -10px"),
+                 div(style = "margin-top: 2px",
                  downloadButton(ns("downloadSelectedSiteParaData"),
                                 "Click this box for downloading data",
                                 style= "color: #3498DB ; background-color: #CCCCFF; border-color: black"
                                )
+                 )
                 )
             )
          )    # FluidPage

@@ -40,9 +40,7 @@ introductionUI <- function(id){
          ),
          tags$br(),
          tags$div(
-           "This dashboard is still in its development phase and the time-slider in the third and fourth
-             tabs can't be used at this moment as there is only one year data available. But the data
-             shown in the dashboard can be downloaded in csv format. We publish the dashboard
+           "This dashboard is still in its development phase. We publish the dashboard
              because the information might be useful to others involved in catchment management.
              We would welcome ",
            a(href="mailto:reporting@cyfoethnaturiolcymru.gov.uk","feedback"),
@@ -109,10 +107,7 @@ introductionUI <- function(id){
        ),
    tags$br(),
    tags$div(
-        "Mae'r dangosfwrdd hwn yn dal yn ei gyfnod datblygu a gellir defnyddio'r
-              nodwedd addasu amser yn y trydydd a'r pedwerydd tab ar hyn o bryd 
-              gan mai dim ond blwyddyn o ddata sydd ar gael. Ond gallwch lawrlwytho'r 
-              data a ddangosir yn y dangosfwrdd ar fformat csv. Caiff y data ei gyhoeddi
+        "Mae'r dangosfwrdd hwn yn dal yn ei gyfnod datblygu. Caiff y data ei gyhoeddi
               oherwydd gallai'r wybodaeth fod yn ddefnyddiol i eraill sy'n ymwneud", HTML("&#226"),
               "rheoli dalgylchoedd a a byddem yn croesawu",
               a(href="mailto:reporting@cyfoethnaturiolcymru.gov.uk","adborth"), "sut i'w ddefnyddio."

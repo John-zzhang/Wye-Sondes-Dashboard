@@ -5,9 +5,9 @@ library(shinydashboard)
 library(lubridate)
 
 # set default sample site (Id=85006) and calcualte the min and max year
-yearStart <- join_redbrook_glasbury %>% dplyr::filter(ID==55023) %$% min(lubridate::year(Date))
+dateStart <- join_redbrook_glasbury %>% dplyr::filter(ID==55023) %$% min(Date)
 
-yearEnd <- join_redbrook_glasbury %>% dplyr::filter(ID==55023) %$% max(lubridate::year(Date))
+dateEnd <- join_redbrook_glasbury %>% dplyr::filter(ID==55023) %$% max(Date)
 
 # UI component
 siteComparisonUI <- function(id){
@@ -22,12 +22,15 @@ siteComparisonUI <- function(id){
                   div(style = "margin-top: -20px"),
                   selectizeInput(ns("sampleSelection"),
                                    label = "",
-                                   choice = NULL,
-                                   # choices =metadata_Sonde$Name,
+                                   # choice = NULL,
+                                   choices =metadata_Sonde_Wye$Name,
                                    multiple = TRUE,
-                                   selected = "Redbrook",
-                                   options = list(placeholder = 'Click here for the drop-down menu'))
-                ),
+                                   selected = "Redbrook"
+                                   # options = list(placeholder = 'Glasbury')
+                                 # ,
+                                   # options = list(placeholder = 'Click here for the drop-down menu')
+                                )
+                               ),
            
            column(width = 3,
                  p(tags$b("2. Choose an element from the list"), style = "font-size:14px;color:#4997d0",width = "100%"),
@@ -36,17 +39,20 @@ siteComparisonUI <- function(id){
                 ),
                
            column(width = 6,
-                 p(tags$b("3. Choose a start and an end year"), style = "font-size:14px;color:#4997d0",width = "100%"),
+                 p(tags$b("3. Choose a start and an end date"), style = "font-size:14px;color:#4997d0",width = "100%"),
                  div(style = "margin-top: -10px"),
-                 sliderInput(ns("yearRange"),
+                 sliderInput(ns("dateRange"),
                             # label="3. Choose a start and end year:",
                             label = NULL,
-                            min = yearStart,
-                            max = yearEnd,
-                            value=c(yearStart,yearEnd),
+                            min = dateStart,
+                            max = dateEnd,
+                            value=c(dateStart,dateEnd),
                             width = '600px',
                             animate = TRUE,
-                            sep = "" )
+                            step = 1)
+                            # ,
+                            # sep = "" 
+                            # )
                 )
          ),
          
@@ -62,26 +68,27 @@ siteComparisonServer <- function (input,output,session){
     selectedSample <- reactiveValues(ID = 55023)
     
   # update the SelectizeInput
-    updateSelectizeInput(session, "sampleSelection", choices = metadata_Sonde_Wye$Name, server = TRUE)
- 
+    # updateSelectizeInput(session, "sampleSelection", choices = metadata_Sonde_Wye$Name, selected = "Redbrook", server = TRUE)
+
    # store the click station id
-      observeEvent(input$sampleMap_marker_click, {
-         selectedSample$ID <-  input$sampleMap_marker_click$id
-      
-       # update slider input min, max and range value for year
-         yearStart <- join_redbrook_glasbury %>%
-         dplyr::filter(ID==selectedSample$ID) %$% min(lubridate::year(Date))
-      
-         yearEnd <- join_redbrook_glasbury %>%
-         dplyr::filter(ID==selectedSample$ID) %$% max(lubridate::year(Date))
-      
-         yearValueRange <- c(yearStart,yearEnd)
-      
-         updateSliderInput(session, "yearRange",
-                        min = yearStart,
-                        max = yearEnd,
-                        value = yearValueRange)
-        })  
+      # observeEvent(input$sampleMap_marker_click, {
+      #    selectedSample$ID <-  input$sampleMap_marker_click$id
+      # 
+      #  # update slider input min, max and range value for year
+      #    dateStart <- join_redbrook_glasbury %>%
+      #    dplyr::filter(ID==selectedSample$ID) %$% min(Date)
+      # 
+      #    dateEnd <- join_redbrook_glasbury %>%
+      #    dplyr::filter(ID==selectedSample$ID) %$% max(Date)
+      # 
+      #    yearValueRange <- c(dateStart,dateEnd)
+      # 
+      #    updateSliderInput(session, "dateRange",
+      #                   min = dateStart,
+      #                   max = daterEnd,
+      #                   value = yearValueRange,
+      #                   step = 1)
+      #   })  
     
         filteredData <- reactive({
                         filterd <- join_redbrook_glasbury %>%
@@ -89,7 +96,7 @@ siteComparisonServer <- function (input,output,session){
                          })
         
         filteredDataDropBox <- reactive({
-       
+         req(input$sampleSelection)
                     filterd2 <- join_redbrook_glasbury %>%
                     dplyr::filter(Name %in% input$sampleSelection)
         })
@@ -131,8 +138,8 @@ siteComparisonServer <- function (input,output,session){
    
           # update the SelectizeInput
           
-          updateSelectizeInput(session, inputId = "sampleSelection", choices = metadata_Sonde_Wye$Name, server = FALSE)
-          
+          # updateSelectizeInput(session, inputId = "sampleSelection", choices = metadata_Sonde_Wye$Name, server = FALSE)
+          # 
           
  # Render plotly depending of the selected parameter
 
@@ -140,12 +147,12 @@ siteComparisonServer <- function (input,output,session){
           
           # if(is.null(input$sampleSelection)){return()}
 
-           req(input$sampleSelection)
+           req(input$sampleSelection,input$variable)
 
       
             sampleData <- filteredDataDropBox() %>% 
               # join_camrose_pelcomb %>%
-              dplyr::filter(lubridate::year(Date) >=input$yearRange[1] & lubridate::year(Date)<=input$yearRange[2]) %>%
+              dplyr::filter(Date >=input$dateRange[1] & Date<=input$dateRange[2]) %>%
               group_by(Name) 
             
             plot_ly(data = sampleData, x = ~lubridate::ymd_hms(Datetime),
@@ -184,14 +191,15 @@ siteComparisonServer <- function (input,output,session){
         
         output$plot2 <- renderPlotly({
           
-          req(input$sampleSelection2)
+          req(input$variable2,input$sampleSelection2)
+          
           
           n <- length(input$variable2)
          
           plot_list = vector("list", n)
          
           sampleData2 <- filteredDataDropBox2() %>%
-                       dplyr::filter(lubridate::year(Date)>=input$yearRange[1] & lubridate::year(Date)<=input$yearRange[2])
+                       dplyr::filter(Date>=input$dateRange[1] & Date<=input$dateRange[2])
 
           for (i in 1:n)
           {
