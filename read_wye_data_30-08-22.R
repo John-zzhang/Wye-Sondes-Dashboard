@@ -68,7 +68,16 @@
   #            paste0("Temperature (°C")
   
     ## delete some of the object
-  rm(Redbrook, Glasbury, Ddol_Farm, Irfon,Ithon, Llynfi, join_redbrook_glasbury1)
+  
+  # get the alphabetic order of the column names
+  
+  new_colname_order <- sort(colnames(join_redbrook_glasbury))
+  join_redbrook_glasbury1 <- join_redbrook_glasbury[,new_colname_order]
+  join_redbrook_glasbury <- join_redbrook_glasbury1
+  
+  # delete the unused objects
+  rm(Redbrook, Glasbury, Ddol_Farm, Irfon,Ithon, Llynfi, join_redbrook_glasbury1,
+     new_colname_order,)
  
   
   

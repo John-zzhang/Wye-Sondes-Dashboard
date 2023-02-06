@@ -33,7 +33,8 @@ library(rlang)
 source("./introduction_wye.R")
 source("./site_location_wye.R")
 source("./site_comparison_wye.R")
-source("./element_comparison_wye.R")
+source("./element_comparison_wye_overlay.R")
+source("./element_comparison_wye_side_by_side.R")
 source("./download_data_wye.R")
 
 ####~~~~~~~~~~ UI ~~~~~~~~~~~####
@@ -96,7 +97,7 @@ ui <- fluidPage(
              #   }
              #   ")),
              siteComparisonUI("site_comparison")),
-    tabPanel("Element Comparison", 
+    tabPanel("Element Comparison 1", 
                       icon = icon("table"),
                       # tags$style(HTML("
                       #   li a {
@@ -108,6 +109,18 @@ ui <- fluidPage(
                       #   ")),
              elementComparisonUI("element_comparison")
              ),
+    tabPanel("Element Comparison 2", 
+             icon = icon("table"),
+             # tags$style(HTML("
+             #   li a {
+             #   font-size: 15px;
+             #   background: blue ;
+             #   margin: 5px;
+             #   color: red ;
+             #   }
+             #   ")),
+             elementComparisonUI2("element_comparison_sidebyside")
+    ),
     tabPanel("Data Download",
              icon = icon("download"),
              # tags$style(HTML("
@@ -147,6 +160,7 @@ server <- function(input, output,session) {
   shiny::callModule(siteLocationServer, "site_location")
   shiny::callModule(siteComparisonServer, "site_comparison")
   shiny::callModule(elementComparisonServer, "element_comparison")
+  shiny::callModule(elementComparisonServer2, "element_comparison_sidebyside")
   shiny::callModule(dataDownloadServer,"data_download")
   # shiny::callModule(analysisServer , "analysis")
   # shiny::callModule(comparisonServer , "comparison")

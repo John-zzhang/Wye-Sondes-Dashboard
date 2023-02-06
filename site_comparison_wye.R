@@ -155,29 +155,42 @@ siteComparisonServer <- function (input,output,session){
               dplyr::filter(Date >=input$dateRange[1] & Date<=input$dateRange[2]) %>%
               group_by(Name) 
             
-            plot_ly(data = sampleData, x = ~lubridate::ymd_hms(Datetime),
-                    y = ~ sampleData[[as.name(input$variable)]], type = "scatter", mode = "lines",color = ~Name ) %>% 
+            plot_ly(data = sampleData, 
+                    x = ~lubridate::ymd_hms(Datetime),
+                    y = ~ sampleData[[as.name(input$variable)]], 
+                    type = "scatter", 
+                    mode = "lines",
+                    line = list(width = 1.2),
+                    color = ~Name ) %>% 
             
             # 
                layout(
             title= list(text = paste0("Time series plot of ",
                                             input$variable),
        
-                               font = list(size = 18,
+                               font = list(size = 15,
                                            face = "bold")
                                ),
             # 
                   xaxis = list(title = "Date-Time",
+                               rangeslider = list(visible = T,thickness=0.1),
+                               rangeselector=list(buttons=list(
+                                                             list(step = "all"),
+                                                             list(count=3, label="3months", step="month", stepmode="backward"),
+                                                             list(count=2, label="2m", step="month", stepmode="backward"),
+                                                             list(count=1, label="1m", step="month", stepmode="todate")
+                                                          )
+                                              ),
                                 font = list(
                                             family = "Courier New, monospace",
-                                            size = 15,
+                                            size = 12,
                                             color = "RebeccaPurple")
                                 ),
 
                   yaxis = list(title = as.character(input$variable),
                                 font = list(
                                             family = "Courier New, monospace",
-                                            size = 15,
+                                            size = 12,
                                             color = "RebeccaPurple")
                                 ),
                 
@@ -212,14 +225,14 @@ siteComparisonServer <- function (input,output,session){
                    xaxis = list(title = "Date-Time",
                               font = list(
                                 family = "Courier New, monospace",
-                                size = 15,
+                                size = 12,
                                 color = "RebeccaPurple")
                  ),
                  
                    yaxis = list(title = as.character(input$variable2[[i]]),
                               font = list(
                                 family = "Courier New, monospace",
-                                size = 11,
+                                size = 12,
                                 color = "RebeccaPurple")
                  ),
                  
